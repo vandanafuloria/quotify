@@ -32,7 +32,7 @@ function handleQuotes(state, action) {
 }
 
 function App() {
-  const [number, setNumber] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
   const [theme, themeDispatch] = useReducer(themeMode, "LIGHT");
 
   const [quote, quoteDispatch] = useReducer(handleQuotes, {
@@ -40,6 +40,7 @@ function App() {
     data: [],
     error: null,
   });
+  console.log(startIndex)
 
   const handleMode = () => {
     console.log("handle mode is clciking");
@@ -50,7 +51,7 @@ function App() {
   const fetchQuote = async () => {
     quoteDispatch({ type: "FETCH_START" });
     try {
-      const res = await fetch("https://dummyjson.com/quotes");
+      const res = await fetch("https://dummyjson.com/quotes?limit=1000");
       const resData = await res.json();
 
       quoteDispatch({ type: "FETCH_END", payload: resData.quotes });
@@ -64,7 +65,13 @@ function App() {
     fetchQuote();
   }, []);
 
-  console.log("this is a theme", theme);
+  const handleNextSet= ()=> {
+    setStartIndex(startIndex + 3)
+  }
+
+  const handlePrevSet = ()=>{
+    setStartIndex(startIndex - 3)
+  }
 
   return (
     <>
@@ -90,17 +97,22 @@ function App() {
             {quote.error && <div> Loading... </div>}
             {quote.data.length > 0 && (
               <div>
-                {quote.data.map((q, i) => {
+
+             
+                {quote.data.slice(startIndex, startIndex + 3).map((q, i) => {
                   return (
                     <h3 key={i} className="border border-pink-600 p-4 my-6">
-                      {" "}
-                      {q.quote}{" "}
+                
+                      {q.quote}
                     </h3>
                   );
                 })}
               </div>
             )}
           </div>
+            <button onClick={handlePrevSet} className={startIndex == 0 ? "bg-gray-400 cursor-not-allowed opacity-50" : "opacity-100"} >PREV</button>
+          <button onClick={handleNextSet}>NEXT</button>
+        
 
           <div></div>
         </div>
