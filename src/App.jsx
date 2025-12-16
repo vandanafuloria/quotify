@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import loader from "./assets/loader.svg";
 import Header from "../src/Component/Header";
+import Card from "../src/Component/Card";
+
+
 
 import "./App.css";
 
 import { useReducer } from "react";
+
+
+
 
 function themeMode(state, action) {
   // In JavaScript, any non-empty string ("LIGHT" or "DARK") is truthy. //So theme ? will always be true, because both "LIGHT" and "DARK" are truthy.
@@ -31,7 +37,7 @@ function handleQuotes(state, action) {
   }
 }
 
-function App() {
+ export default function App() {
   const [startIndex, setStartIndex] = useState(0);
   const [theme, themeDispatch] = useReducer(themeMode, "LIGHT");
 
@@ -75,50 +81,61 @@ function App() {
 
   return (
     <>
-      <div
-        className={
-          theme === "LIGHT"
-            ? "bg-[#1B1B1F] text-gray-300"
-            : "bg-white text-black"
-        }
-      >
-        <div>
-          <Header theme={theme} handleMode={handleMode} />
-        </div>
-        <div className={`min-h-screen  transition-all duration-500 gap-10 `}>
-          <div className="flex gap-10 h-fit"></div>
+   <div
+  className={`min-h-screen bg-cover bg-center bg-no-repeat ${
+    theme === "LIGHT"
+      ? "bg-[#1B1B1F] text-gray-300"
+      : "bg-white text-black"
+  }`}
+  style={{
+    backgroundImage:
+      "url('https://static.vecteezy.com/system/resources/thumbnails/047/948/036/small/abstract-gradient-background-with-golden-splashes-photo.jpg')",
+  }}
+>
+  <Header theme={theme} handleMode={handleMode} />
 
-          <div className="relative">
-            {quote.loading && (
-              <div className="absolute left-0 right-0 top-0 bottom-0 h-full w-full flex justify-center items-center">
-                <img src={loader} alt="svg" />
-              </div>
-            )}
-            {quote.error && <div> Loading... </div>}
-            {quote.data.length > 0 && (
-              <div>
+  <div className="flex justify-center items-center min-h-[70vh] relative">
+    {quote.loading && (
+      <img src={loader} alt="loading" />
+    )}
 
-             
-                {quote.data.slice(startIndex, startIndex + 3).map((q, i) => {
-                  return (
-                    <h3 key={i} className="border border-pink-600 p-4 my-6">
-                
-                      {q.quote}
-                    </h3>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-            <button onClick={handlePrevSet} className={startIndex == 0 ? "bg-gray-400 cursor-not-allowed opacity-50" : "opacity-100"} >PREV</button>
-          <button onClick={handleNextSet}>NEXT</button>
-        
+    {quote.error && <div>Error loading quotes</div>}
 
-          <div></div>
-        </div>
-      </div>
-    </>
+    {quote.data[startIndex] && (
+      <Card quote={quote.data[startIndex].quote} />
+    )}
+  </div>
+
+  <div className="flex justify-center gap-6 pb-10">
+    <button
+      onClick={handlePrevSet}
+      disabled={startIndex === 0}
+      className={`border rounded-2xl px-4 py-2 ${
+        startIndex === 0
+          ? "opacity-50 cursor-not-allowed"
+          : ""
+      }`}
+    >
+      PREV
+    </button>
+
+    <button
+      onClick={handleNextSet}
+      disabled={startIndex === quote.data.length - 1}
+      className={`border rounded-2xl px-4 py-2 ${
+        startIndex === quote.data.length - 1
+          ? "opacity-50 cursor-not-allowed"
+          : ""
+      }`}
+    >
+      NEXT
+    </button>
+  </div>
+</div>
+</>
   );
 }
 
-export default App;
+
+
+

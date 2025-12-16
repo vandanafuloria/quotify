@@ -19,9 +19,10 @@ export default function Header({theme, handleMode}) {
   
 
   return <>
-  <div className="flex justify-between text-center p-5 border"> 
+  <div className="flex justify-between text-center p-5 h-[100px]"> 
     <div className="w-[40px] border border-pink-600 rounded-full p-2">
       <img className="w-full" src={logo} alt="logo" />
+      <h1 className="text-2xl font-bold">Quotify...</h1>
       </div> {/* logo */}
       <div>
         <nav>
