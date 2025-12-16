@@ -1,23 +1,30 @@
-# Lets learn redux 
-1. create a redux store by - configure a store 
-2. access that store to the react by provider - wrap it 
-3. create the slice for the store in differnt file
-4. Creating a slice requires a string name to identify the slice, an initial state value, and one or more reducer functions to define how the state can be updated. Once a slice is created, we can export the generated Redux action creators and the reducer function for the whole slice.
+# useReducer 
+```js
+const [state, dispatch] = useReducer(reducer, initialState);
 
-# Summary
-Create a Redux store with configureStore
-configureStore accepts a reducer function as a named argument
-configureStore automatically sets up the store with good default settings
+```
+* A pure function means:
 
-## Provide the Redux store to the React application components
-Put a React-Redux <Provider> component around your <App />
-Pass the Redux store as <Provider store={store}>
+* Same input → Same output, No dependency on outside world, 
+* Reducers must be synchronous. (no async function inside reducer )
+* Immutable update 
+### “Reducers must be pure functions without side effects or async logic. They should only compute and return the next state immutably based on the current state and action.”
 
-## Create a Redux "slice" reducer with createSlice
-Call createSlice with a string name, an initial state, and named reducer functions
-Reducer functions may "mutate" the state using Immer
-Export the generated slice reducer and action creators
+# Parts of Use Reducer 
+1. Initial state 
+2. Reducer Function  - pure function , no async , no mutation , Reducer never fetches.
+Reducer only decides state.
+3. useReducer hook 
+4. Dispatch - tell reducer what happend (type is mandatory )
 
-## Use the React-Redux useSelector/useDispatch hooks in React components
-Read data from the store with the useSelector hook
-Get the dispatch function with the useDispatch hook, and dispatch actions as needed
+# Flow
+
+1. User does something (click, page load)
+        ↓
+2. dispatch(action) is called
+        ↓
+3. reducer receives (state, action)
+        ↓
+4. reducer returns NEW state
+        ↓
+5. React re-renders UI
