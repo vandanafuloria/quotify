@@ -12,10 +12,47 @@ const [state, dispatch] = useReducer(reducer, initialState);
 
 # Parts of Use Reducer 
 1. Initial state 
+
+```js
+
+const initialState = {
+  loading: false,
+  data: [],
+  error: null
+};
+
+```
 2. Reducer Function  - pure function , no async , no mutation , Reducer never fetches.
 Reducer only decides state.
+
+```js
+function reducer(state, action) {
+  switch (action.type) {
+    case "FETCH_START":
+      return { ...state, loading: true };
+
+    case "FETCH_SUCCESS":
+      return { ...state, loading: false, data: action.payload };
+
+    case "FETCH_ERROR":
+      return { ...state, loading: false, error: true };
+
+    default:
+      return state;
+  }
+}
+```
 3. useReducer hook 
+```js
+const [state, dispatch] = useReducer(reducer, initialState);
+
+```
 4. Dispatch - tell reducer what happend (type is mandatory )
+
+```js
+dispatch({ type: "FETCH_START" });
+
+```
 
 # Flow
 
@@ -28,3 +65,24 @@ Reducer only decides state.
 4. reducer returns NEW state
         ↓
 5. React re-renders UI
+
+
+
+# Whats the confusion - thinking it as use state 
+
+User clicks
+→ I directly update state
+→ UI updates
+
+
+# ❌ useState thinking
+
+“I want to update the value”
+
+# ✅ useReducer thinking
+
+“Something happened — reducer will decide what to do”
+
+# Flow would be - 
+
+* Import useReducer -> initial state -> reducer funtion  ->  declare use reducer -> funtion that dispatch a funtion -> onlclick 

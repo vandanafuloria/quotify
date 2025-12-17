@@ -60,7 +60,7 @@ function handleQuotes(state, action) {
       const res = await fetch("https://dummyjson.com/quotes?limit=1000");
       const resData = await res.json();
 
-      quoteDispatch({ type: "FETCH_END", payload: resData.quotes });
+      quoteDispatch({ type: "FETCH_END", payload: resData.quotes })
     } catch (error) {
       console.log(error);
       quoteDispatch({ type: "FETCH_ERROR", payload: error.message });
@@ -72,11 +72,11 @@ function handleQuotes(state, action) {
   }, []);
 
   const handleNextSet= ()=> {
-    setStartIndex(startIndex + 3)
+    setStartIndex(startIndex + 1)
   }
 
   const handlePrevSet = ()=>{
-    setStartIndex(startIndex - 3)
+    setStartIndex(startIndex - 1)
   }
 
   return (
