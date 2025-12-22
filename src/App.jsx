@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import loader from "./assets/loader.svg";
-import Header from "../src/Component/Header";
-import Card from "../src/Component/Card";
-
-
-
+import Header from "./Component/Header";
+import Card from "./Component/Card";
 import "./App.css";
-
-import { useReducer } from "react";
-
-
 
 
 function themeMode(state, action) {
-  // In JavaScript, any non-empty string ("LIGHT" or "DARK") is truthy. //So theme ? will always be true, because both "LIGHT" and "DARK" are truthy.
-  // That means it’ll always show the <SunIcon /> — never the <MoonIcon />.
-
   switch (action.type) {
     case "TOGGLE":
       return state === "LIGHT" ? "DARK" : "LIGHT";
@@ -23,6 +13,7 @@ function themeMode(state, action) {
       return state;
   }
 }
+
 
 function handleQuotes(state, action) {
   switch (action.type) {
@@ -37,105 +28,111 @@ function handleQuotes(state, action) {
   }
 }
 
- export default function App() {
+export default function App() {
   const [startIndex, setStartIndex] = useState(0);
   const [theme, themeDispatch] = useReducer(themeMode, "LIGHT");
+  const [likedMap, setLikedMap] = useState({});
+  const [bookmark, setBookmarks] = useState({});
+  console.log("this is bookmark", bookmark);
 
   const [quote, quoteDispatch] = useReducer(handleQuotes, {
     loading: false,
     data: [],
     error: null,
   });
-  console.log(startIndex)
 
-  const handleMode = () => {
-    console.log("handle mode is clciking");
-
-    themeDispatch({ type: "TOGGLE" });
-  };
 
   const fetchQuote = async () => {
     quoteDispatch({ type: "FETCH_START" });
+
     try {
-      const res = await fetch("https://dummyjson.com/quotes?limit=1000");
+      const res = await fetch("http://localhost:4000/quotes");
       const resData = await res.json();
 
-      quoteDispatch({ type: "FETCH_END", payload: resData.quotes })
+      quoteDispatch({
+        type: "FETCH_END",
+        payload: resData.quotes,
+      });
     } catch (error) {
-      console.log(error);
-      quoteDispatch({ type: "FETCH_ERROR", payload: error.message });
+      quoteDispatch({
+        type: "FETCH_ERROR",
+      });
     }
   };
+
 
   useEffect(() => {
     fetchQuote();
   }, []);
 
-  const handleNextSet= ()=> {
-    setStartIndex(startIndex + 1)
+
+  const toggleLike = (id) => {
+    setLikedMap((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+  const toggleBookmark = (id)=>{ // spreading existing bookmark , reversing the perticualr id and adding it ot the prev with fresh value (BEST PRACTICE TO USE WHEN NEW STATE DEPENDENT ON OLD STATE ) Copies all existing bookmarks - if bookmark does not exixst it adds , false to true, if book mark exist - it make it true to false , 
+    setBookmarks((prev)=> ({...prev, [id]: !prev[id]}))
   }
 
-  const handlePrevSet = ()=>{
-    setStartIndex(startIndex - 1)
-  }
+
+  const handleNextSet = () => {
+    setStartIndex((prev) => prev + 1);
+  };
+
+  const handlePrevSet = () => {
+    setStartIndex((prev) => prev - 1);
+  };
+
+
+
+  const currentQuote = quote.data[startIndex];
 
   return (
-    <>
-   <div
-  className={`min-h-screen bg-cover bg-center bg-no-repeat ${
-    theme === "LIGHT"
-      ? "bg-[#1B1B1F] text-gray-300"
-      : "bg-white text-black"
-  }`}
-  style={{
-    backgroundImage:
-      "url('https://static.vecteezy.com/system/resources/thumbnails/047/948/036/small/abstract-gradient-background-with-golden-splashes-photo.jpg')",
-  }}
->
-  <Header theme={theme} handleMode={handleMode} />
-
-  <div className="flex justify-center items-center min-h-[70vh] relative">
-    {quote.loading && (
-      <img src={loader} alt="loading" />
-    )}
-
-    {quote.error && <div>Error loading quotes</div>}
-
-    {quote.data[startIndex] && (
-      <Card quote={quote.data[startIndex].quote} />
-    )}
-  </div>
-
-  <div className="flex justify-center gap-6 pb-10">
-    <button
-      onClick={handlePrevSet}
-      disabled={startIndex === 0}
-      className={`border rounded-2xl px-4 py-2 ${
-        startIndex === 0
-          ? "opacity-50 cursor-not-allowed"
-          : ""
+    <div
+      className={`min-h-screen ${
+        theme === "DARK" ? "bg-[#1B1B1F] text-gray-300" : "bg-pink text-black"
       }`}
     >
-      PREV
-    </button>
+      <Header theme={theme} liked={likedMap} handleMode={() => themeDispatch({ type: "TOGGLE" })} />
 
-    <button
-      onClick={handleNextSet}
-      disabled={startIndex === quote.data.length - 1}
-      className={`border rounded-2xl px-4 py-2 ${
-        startIndex === quote.data.length - 1
-          ? "opacity-50 cursor-not-allowed"
-          : ""
-      }`}
-    >
-      NEXT
-    </button>
-  </div>
-</div>
-</>
+      <div className="flex justify-center items-center min-h-[70vh]">
+        {quote.loading && <img src={loader} alt="loading" />}
+        {quote.error && <div>Error loading quotes</div>}
+
+        {currentQuote && (
+          <Card
+            id={currentQuote.id}
+            quote={currentQuote.quote}
+            author={currentQuote.author}
+            category={currentQuote.category}
+            liked={!!likedMap[currentQuote.id]} // !! after this value convert into boolean. (DOUBLE NEGATION)
+            bookmark={!!bookmark[currentQuote.id]}
+            onLike={toggleLike}
+            onBookmark={toggleBookmark}
+            theme={theme}
+          />
+        )}
+      </div>
+
+      <div className="flex justify-center gap-6 pb-10">
+        <button
+          onClick={handlePrevSet}
+          disabled={startIndex === 0}
+          className="border rounded-2xl px-4 py-2 disabled:opacity-50"
+        >
+          PREV
+        </button>
+
+        <button
+          onClick={handleNextSet}
+          disabled={startIndex === quote.data.length - 1}
+          className="border rounded-2xl px-4 py-2 disabled:opacity-50"
+        >
+          NEXT
+        </button>
+      </div>
+    </div>
   );
 }
-
-
-
-

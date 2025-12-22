@@ -86,3 +86,16 @@ User clicks
 # Flow would be - 
 
 * Import useReducer -> initial state -> reducer funtion  ->  declare use reducer -> funtion that dispatch a funtion -> onlclick 
+
+# Want to add like sound but ...
+
+Sound = side effect
+Reducer rules:
+
+❌ no async
+
+❌ no DOM
+
+❌ no audio
+
+❌ no side effects

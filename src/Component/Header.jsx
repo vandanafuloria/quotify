@@ -9,14 +9,10 @@ import {Heart, BookmarkIcon, SunIcon, MoonIcon, Sun} from "lucide-react"
 
 
 
-export default function Header({theme, handleMode}) {
+export default function Header({theme, handleMode, liked}) {
+  console.log(liked, "this is form the header ")
 
 
-
-
-
-
-  
 
   return <>
   <div className="flex justify-between text-center p-5 h-[100px]"> 
@@ -42,9 +38,30 @@ export default function Header({theme, handleMode}) {
  
       </div>
       <div className="flex gap-4">
+<span className="relative inline-block">
+  <Heart size={24} className="z-10" />
 
-       
-  <Heart/>
+  <span className="
+    absolute 
+    -top-2 
+    -right-2 
+    bg-pink-600 
+    text-white 
+    text-xs 
+    w-5 
+    h-5 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full
+    z-0
+  ">
+    {Object.keys(liked).length}
+  </span>
+</span>
+
+     
+ 
       <BookmarkIcon />
       </div>
     
