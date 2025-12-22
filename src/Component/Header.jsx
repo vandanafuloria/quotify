@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import logo from "../assets/logo.png";
 import {Link} from "react-router-dom";
 import { useReducer } from "react";
+
 import {Heart, BookmarkIcon, SunIcon, MoonIcon, Sun} from "lucide-react"
 
 
@@ -9,8 +10,8 @@ import {Heart, BookmarkIcon, SunIcon, MoonIcon, Sun} from "lucide-react"
 
 
 
-export default function Header({theme, handleMode, liked}) {
-  console.log(liked, "this is form the header ")
+export default function Header({theme, handleMode, liked, bookmark, likeView}) {
+  
 
 
 
@@ -38,7 +39,7 @@ export default function Header({theme, handleMode, liked}) {
  
       </div>
       <div className="flex gap-4">
-<span className="relative inline-block">
+<span className="relative inline-block" onClick={likeView}>
   <Heart size={24} className="z-10" />
 
   <span className="
@@ -61,8 +62,27 @@ export default function Header({theme, handleMode, liked}) {
 </span>
 
      
- 
-      <BookmarkIcon />
+ <span className="relative inline-block">
+  <BookmarkIcon />
+     <span className="
+    absolute 
+    -top-2 
+    -right-2 
+    bg-pink-600 
+    text-white 
+    text-xs 
+    w-5 
+    h-5 
+    flex 
+    items-center 
+    justify-center 
+    rounded-full
+    z-0
+  ">
+    {Object.keys(bookmark).length}
+  </span>
+ </span>
+    
       </div>
     
       

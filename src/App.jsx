@@ -76,6 +76,10 @@ export default function App() {
     setBookmarks((prev)=> ({...prev, [id]: !prev[id]}))
   }
 
+  const handleLikeList = ()=>{
+    console.log("this is likelist")
+  }
+
 
   const handleNextSet = () => {
     setStartIndex((prev) => prev + 1);
@@ -95,7 +99,7 @@ export default function App() {
         theme === "DARK" ? "bg-[#1B1B1F] text-gray-300" : "bg-pink text-black"
       }`}
     >
-      <Header theme={theme} liked={likedMap} handleMode={() => themeDispatch({ type: "TOGGLE" })} />
+      <Header theme={theme} liked={likedMap} bookmark={bookmark}  likeView={handleLikeList}handleMode={() => themeDispatch({ type: "TOGGLE" })} />
 
       <div className="flex justify-center items-center min-h-[70vh]">
         {quote.loading && <img src={loader} alt="loading" />}
@@ -120,7 +124,7 @@ export default function App() {
         <button
           onClick={handlePrevSet}
           disabled={startIndex === 0}
-          className="border rounded-2xl px-4 py-2 disabled:opacity-50"
+          className="border rounded-2xl px-4 py-2 disabled:opacity-50 hover:bg-pink-500 hover:text-white"
         >
           PREV
         </button>
@@ -128,7 +132,7 @@ export default function App() {
         <button
           onClick={handleNextSet}
           disabled={startIndex === quote.data.length - 1}
-          className="border rounded-2xl px-4 py-2 disabled:opacity-50"
+          className="border rounded-2xl px-4 py-2 disabled:opacity-50 hover:bg-pink-500 hover:text-white"
         >
           NEXT
         </button>
